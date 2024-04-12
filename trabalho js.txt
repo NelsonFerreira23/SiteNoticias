@@ -1,0 +1,14 @@
+Exercício de comunicação com API’s em JavaScript
+1. Com HTML e CSS, cria um layout do tipo notícias em destaque. Exemplo: https://www.msn.com/pt-br/channel/topic/Destaques, https://news.google.com ou outro site de notícias.
+
+
+2. Após teres um layout que te agrade, alimenta a página com dados fazendo uso da API do JSONPlaceholder (https://jsonplaceholder.typicode.com/). Usa o caminho ‘/post’ dessa API para receber uma simulação de algumas notícias.
+
+
+3. Deves usar um sistema de paginação, adicionando os parâmetros ‘?_page=1&_limit=10’.
+
+
+4. Ao clicar numa notícia, devera se navegar para uma página onde mostra a notícia completa e os comentários associados a essa notícia. Pode receber os comentários de uma determinada notícia no caminho ‘/comments?postId=POST_ID’ da API.
+
+
+5. Deves mostrar o nome do utilizador que criou as notícias e os comentários. Usa o caminho ‘/users/USER_ID’ da API, para receber os dados do utilizador e saberes o nome.
