@@ -3,7 +3,40 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noticia</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <title>Detalhes da Notícia</title>
   </head>
-  <body></body>
+  <body>
+    <div class="container mx-auto">
+      <div class="mt-10">
+        <h1 class="text-3xl font-bold mb-5" id="tituloNoticia"></h1>
+        <div id="corpoNoticia" class="mb-5"></div>
+        <a href="index.html" class="text-blue-500"
+          >Voltar para a página inicial</a
+        >
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const postId = urlParams.get("postId");
+
+        fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
+          .then((response) => response.json())
+          .then((data) => {
+            const tituloNoticia = document.getElementById("tituloNoticia");
+            const corpoNoticia = document.getElementById("corpoNoticia");
+
+            tituloNoticia.textContent = data.title;
+            corpoNoticia.textContent = data.body;
+          })
+          .catch((error) => console.error("Erro ao carregar notícia:", error));
+      });
+    </script>
+  </body>
 </html>
