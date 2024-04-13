@@ -7,14 +7,18 @@
       href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <style src="styles.css"></style>
     <title>Detalhes da Notícia</title>
   </head>
-  <body>
+  <body class="bg-gray-100">
     <div class="container mx-auto">
-      <div class="mx-20 mt-20 border-2 rounded">
+      <div class="mx-20 mt-20 border-2 rounded bg-white">
         <h1 class="text-3xl font-bold mb-5 text-center" id="tituloNoticia"></h1>
         <div id="corpoNoticia" class="p-10"></div>
+        <div id="autorNoticia" class="p-10"></div>
+        <div id="comentarios" class="p-10">
+          <h2 class="text-xl font-bold mb-3">Comentários:</h2>
+          <ul id="listaComentarios" class="list-disc pl-5"></ul>
+        </div>
         <div class="p-10">
           <a
             href="index.html"
@@ -31,16 +35,49 @@
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("postId");
 
+        const tituloNoticia = document.getElementById("tituloNoticia");
+        const corpoNoticia = document.getElementById("corpoNoticia");
+        const autorNoticia = document.getElementById("autorNoticia");
+        const listaComentarios = document.getElementById("listaComentarios");
+
         fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
           .then((response) => response.json())
           .then((data) => {
-            const tituloNoticia = document.getElementById("tituloNoticia");
-            const corpoNoticia = document.getElementById("corpoNoticia");
-
             tituloNoticia.textContent = data.title;
             corpoNoticia.textContent = data.body;
+
+            fetch(`https://jsonplaceholder.typicode.com/users/${data.userId}`)
+              .then((response) => response.json())
+              .then((user) => {
+                autorNoticia.textContent = `Autor: ${user.name}`;
+              })
+              .catch((error) =>
+                console.error("Erro ao carregar autor da notícia:", error)
+              );
           })
           .catch((error) => console.error("Erro ao carregar notícia:", error));
+
+        fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+          .then((response) => response.json())
+          .then((comments) => {
+            comments.forEach((comment) => {
+              fetch(
+                `https://jsonplaceholder.typicode.com/users/${comment.userId}`
+              )
+                .then((response) => response.json())
+                .then((user) => {
+                  const li = document.createElement("li");
+                  li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}`;
+                  listaComentarios.appendChild(li);
+                })
+                .catch((error) =>
+                  console.error("Erro ao carregar autor do comentário:", error)
+                );
+            });
+          })
+          .catch((error) =>
+            console.error("Erro ao carregar comentários:", error)
+          );
       });
     </script>
   </body>
