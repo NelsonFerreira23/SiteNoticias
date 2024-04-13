@@ -4,86 +4,212 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css"
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
       rel="stylesheet"
     />
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="stylesTailwind.css" />
     <title>Melres Noticias</title>
   </head>
   <body>
-    <div class="selector1">
-      <div class="container mx-auto">
-        <div>
-          <nav class="navbar">
-            <ul class="menu">
-              <li>
-                <a href="index.html">Home</a>
-              </li>
-              <li>
-                <a href="">About</a>
-              </li>
-              <li>
-                <a href="">Products</a>
-              </li>
-              <li>
-                <a href="">Contact</a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-        <div class="darkmode">
-          <button class="btn-toggle"></button>
-        </div>
-        <!-- Destaques -->
-        <div class="grid grid-rows-3 grid-flow-col gap-4">
-          <!--Destaques-->
-          <div class="row-span-3 ...">
-            <div id="destaques">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
-              eaque quisquam deserunt porro quae explicabo nihil! Dignissimos,
-              quaerat odit sint doloremque eaque quis saepe ab esse, explicabo eum
-              fugiat natus!
-            </div>
+    <div class="container mx-auto">
+      <div>
+        <nav class="navbar">
+          <ul class="menu">
+            <li>
+              <a href="index.html">Home</a>
+            </li>
+            <li>
+              <a href="">About</a>
+            </li>
+            <li>
+              <a href="">Products</a>
+            </li>
+            <li>
+              <a href="">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="darkmode">
+        <button class="btn-toggle"></button>
+      </div>
+      <!-- Destaques -->
+      <div class="grid grid-cols-4 gap-4">
+        <!-- Primeira coluna (3/4 da largura) -->
+        <div class="col-span-3">
+          <!-- Conteúdo da primeira coluna aqui -->
+          <div id="destaques">
+            <img
+              src="https://images.pexels.com/photos/17290327/pexels-photo-17290327/free-photo-of-photoshoot-with-joana-slva.jpeg?auto=compress&cs=tinysrgb&w=300&lazy=load"
+              alt="Imagem"
+              class="w-48 h-48 flex items-center justify-center mx-auto my-4"
+            />
+            <h1 class="text-2xl font-bold">Titulo</h1>
+            <p class="text-sm">
+              Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore
+              deleniti soluta maiores, esse ab omnis qui doloremque nostrum aut
+              totam reiciendis officia tenetur iure ex accusantium, consequuntur
+              molestias dolor maxime.
+            </p>
             <hr
               class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700"
             />
           </div>
-          <!--Noticias-->
-          <div class="col-span-2 ...">
-            <div id="noticias">adeus</div>
-          </div>
-          <!--Artigo Opinião-->
-          <div class="row-span-2 col-span-2 ...">
+        </div>
+        <!-- Segunda coluna (1/4 da largura) -->
+        <div class="col-span-1">
+          <!-- Conteúdo da segunda coluna aqui -->
+          <div class="grid grid-rows-2 gap-4">
+            <!-- Artigo Opinião -->
             <div id="artigo">
               Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ea, at?
+              <hr
+                class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700"
+              />
             </div>
+            <!-- Noticias -->
+            <div id="noticias"></div>
+            <div id="pagination" class="flex justify-center"></div>
           </div>
         </div>
       </div>
     </div>
-    
     <script src="script.js"></script>
     <script>
+      let paginaAtual = 1;
+      const postsPorPagina = 5;
+      let totalPosts;
+      const novoDestaque = document.getElementById("destaques");
+      const novaNoticia = document.getElementById("noticias");
+      const novoArtigo = document.getElementById("artigo");
+
       function init() {
-        const novoDestaque = document.getElementById("destaques");
-        const novaNoticia = document.getElementById("noticias");
-        const novoArtigo = document.getElementById("artigo");
+        carregaPosts();
+      }
 
-        // Chama a função getData do crud.js para obter os dados
-        getData().then((value) => {
-          console.log(value);
-
-          // Para cada elemento do array, cria um novo li, um novo checkbox, um novo span e dois novos botões
-          value.forEach((element) => {
-            const novoDestaque = document.createElementbyId("destaques");
-            const novaNoticia = document.createElementbyId("noticias");
-            const novoArtigo = document.createElementbyId("artigo");
-            novoText.innerHTML = element.title; // Adiciona o título do elemento ao span
+      function carregaPosts() {
+        fetch(
+          `https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${postsPorPagina}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erro ao carregar os posts");
+            }
+            totalPosts = response.headers.get("X-Total-Count");
+            return response.json();
+          })
+          .then((data) => {
+            renderPosts(data);
+            renderPagination();
+          })
+          .then((data) => {
+            renderDestaques(data);
+          })
+          .then((data) => {
+            renderArtigos(data);
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
           });
+      }
+
+      //Criar Noticias
+      function renderPosts(posts) {
+        novaNoticia.innerHTML = ""; // Limpa o conteúdo anterior
+        posts.forEach((post) => {
+          const div = document.createElement("div");
+          div.innerHTML = `
+            <h1 class="text-2xl font-bold">${post.title}</h1>
+            <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
+          `;
+          novaNoticia.appendChild(div);
         });
       }
+      //Cria 3 Destaques
+      function renderDestaques() {
+        novoDestaque.innerHTML = ""; // Limpa o conteúdo anterior
+        fetch(
+          `https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${3}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erro ao carregar os posts");
+            }
+            totalPosts = response.headers.get("X-Total-Count");
+            return response.json();
+          })
+          .then((data) => {
+            data.forEach((post) => {
+              const div = document.createElement("div");
+              div.innerHTML = `
+                <img
+                  src="https://images.pexels.com/photos/17290327/pexels-photo-17290327/free-photo-of-photoshoot-with-joana-slva.jpeg?auto=compress&cs=tinysrgb&w=300&lazy=load"
+                  alt="Imagem"
+                  class="w-48 h-48 flex items-center justify-center mx-auto my-4"
+                />
+                <h1 class="text-2xl font-bold">${post.title}</h1>
+                <p class="text-sm">
+                  ${post.body}
+                </p>
+                <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
+              `;
+              novoDestaque.appendChild(div);
+            });
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+          });
+      }
+
+      //cria 3 artigo de opinao com titulo descricao(body) e utilizador
+      function renderArtigos() {
+        novoArtigo.innerHTML = ""; // Limpa o conteúdo anterior
+        fetch(
+          `https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${3}`
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("Erro ao carregar os posts");
+            }
+            totalPosts = response.headers.get("X-Total-Count");
+            return response.json();
+          })
+          .then((data) => {
+            data.forEach((post) => {
+              const div = document.createElement("div");
+              div.innerHTML = `
+                <h1 class="text-2xl font-bold">${post.title}</h1>
+                <p class="text-sm">
+                  ${post.body}
+                </p>
+                <hr class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700" />
+              `;
+              novoArtigo.appendChild(div);
+            });
+          })
+          .catch((error) => {
+            console.error("Erro:", error);
+          });
+      }
+
+      //Cria a paginacao
+      function renderPagination() {
+        const totalPages = Math.ceil(totalPosts / postsPorPagina);
+        const paginationContainer = document.getElementById("pagination");
+        paginationContainer.innerHTML = ""; // Limpa o conteúdo anterior
+
+        for (let i = 1; i <= totalPages; i++) {
+          const button = document.createElement("button");
+          button.textContent = i;
+          button.addEventListener("click", () => {
+            paginaAtual = i;
+            carregaPosts();
+          });
+          paginationContainer.appendChild(button);
+        }
+      }
+
+      init();
     </script>
   </body>
 </html>
