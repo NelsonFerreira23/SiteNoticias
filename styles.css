@@ -34,3 +34,26 @@ h1 {
   justify-content: center;
   align-items: center;
 }
+@media (max-width: 640px) {
+  /* Estilos para telas menores que 640px (sm) */
+  .container {
+    padding: 0; /* Remover o preenchimento em telas pequenas */
+  }
+  .mx-auto {
+    margin-left: auto; /* Alinhar ao centro */
+    margin-right: auto; /* Alinhar ao centro */
+  }
+}
+.pagination-column {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pagination-column button {
+  margin-bottom: 0.5rem;
+  margin-right: 0.5rem;
+
+  padding: 0.5rem 1rem;
+  border: 1px solid hsl(0, 0%, 80%);
+}
