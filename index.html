@@ -1,30 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="styles.css">
-  <title>Melres Noticias</title>
-</head>
-<body>
-  
-  <nav class="navbar">        
-    <ul>             
-      <li>
-        <a href="index.html">Home</a>
-      </li>             
-      <li>
-        <a href="">About</a>
-      </li>             
-      <li>
-        <a href="">Products</a>
-      </li>             
-      <li>
-        <a href="">Contact</a>
-      </li>         
-    </ul>     
-  </nav>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.0.2/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="styles.css" />
+    <title>Melres Noticias</title>
+  </head>
+  <body>
+    <div class="container mx-auto">
+      <div>
+        <nav class="navbar">
+          <ul class="menu">
+            <li>
+              <a href="index.html">Home</a>
+            </li>
+            <li>
+              <a href="">About</a>
+            </li>
+            <li>
+              <a href="">Products</a>
+            </li>
+            <li>
+              <a href="">Contact</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div class="darkmode">
+        <button class="btn-toggle"></button>
+      </div>
+      <!-- Destaques -->
+      <div class="grid grid-rows-3 grid-flow-col gap-4">
+        <!--Destaques-->
+        <div class="row-span-3 ...">
+          <div id="destaques">
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Distinctio
+            eaque quisquam deserunt porro quae explicabo nihil! Dignissimos,
+            quaerat odit sint doloremque eaque quis saepe ab esse, explicabo eum
+            fugiat natus!
+          </div>
+          <hr
+            class="w-48 h-1 mx-auto my-4 bg-gray-100 border-0 rounded md:my-10 dark:bg-gray-700"
+          />
+        </div>
+        <!--Noticias-->
+        <div class="col-span-2 ...">
+          <div id="noticias">adeus</div>
+        </div>
+        <!--Artigo Opinião-->
+        <div class="row-span-2 col-span-2 ...">
+          <div id="artigo">
+            Lorem, ipsum dolor sit amet consectetur adipisicing elit. Ea, at?
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+    <script>
+      function init() {
+        const novoDestaque = document.getElementById("destaques");
+        const novaNoticia = document.getElementById("noticias");
+        const novoArtigo = document.getElementById("artigo");
 
+        // Chama a função getData do crud.js para obter os dados
+        getData().then((value) => {
+          console.log(value);
 
-</body>
+          // Para cada elemento do array, cria um novo li, um novo checkbox, um novo span e dois novos botões
+          value.forEach((element) => {
+            const novoDestaque = document.createElementbyId("destaques");
+            const novaNoticia = document.createElementbyId("noticias");
+            const novoArtigo = document.createElementbyId("artigo");
+            novoText.innerHTML = element.title; // Adiciona o título do elemento ao span
+          });
+        });
+      }
+    </script>
+  </body>
 </html>
