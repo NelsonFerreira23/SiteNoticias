@@ -105,7 +105,7 @@
       }
 
       function renderPosts(posts) {
-        novaNoticia.innerHTML = ""; // Limpa o conteúdo anterior
+        novaNoticia.innerHTML = ""; 
         posts.forEach((post) => {
           const div = document.createElement("div");
           div.innerHTML = `
@@ -116,10 +116,9 @@
         });
       }
 
-      // Cria a paginacao
       function renderPagination() {
         const totalPages = Math.ceil(totalPosts / postsPorPagina);
-        paginationContainer.innerHTML = ""; // Limpa o conteúdo anterior
+        paginationContainer.innerHTML = ""; 
 
         for (let i = 1; i <= totalPages; i++) {
           const button = document.createElement("button");
@@ -140,7 +139,6 @@
 
       function carregaDestaques() {
   const novoDestaque = document.getElementById("destaques");
-  // URL da API para buscar uma imagem aleatória
   const apiKey = "2noocBLOIJ6VORZL3DNCrx07Y0h4JFxZ1hXkUrz7CYVlCkcG2Dpx5ShR";
   fetch(`https://api.pexels.com/v1/curated?per_page=4&page=1`, {
     headers: {
@@ -221,7 +219,6 @@
             console.error("Erro ao carregar artigos de opinião:", error);
           });
       }
-
       init();
     </script>
   </body>

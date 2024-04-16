@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
     <title>Detalhes da Notícia</title>
 </head>
 <body class="bg-gray-100">
@@ -50,7 +51,6 @@
                     })
                     .catch((error) => console.error("Erro ao carregar autor da notícia:", error));
 
-                // Buscando a imagem correspondente ao ID do post
                 fetch(`https://api.pexels.com/v1/search?query=${data.title}&per_page=1&page=1`, {
                     headers: {
                         Authorization: "2noocBLOIJ6VORZL3DNCrx07Y0h4JFxZ1hXkUrz7CYVlCkcG2Dpx5ShR",
@@ -79,7 +79,9 @@
                         .then((response) => response.json())
                         .then((user) => {
                             const li = document.createElement("li");
-                            li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}`;
+                            li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
+                                <button class="btnEdit" onclick="editComment(${comment.id})">Editar</button>
+                                <button class="btnDelete" onclick="deleteComment(${comment.id})">Remover</button>`;
                             listaComentarios.appendChild(li);
                         })
                         .catch((error) =>
@@ -91,6 +93,75 @@
                 console.error("Erro ao carregar comentários:", error)
             );
     });
+
+    function editComment(commentId) {
+        const editedComment = prompt("Editar comentário:");
+        if (editedComment !== null) {
+            fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
+                method: "PUT",
+                body: JSON.stringify({
+                    body: editedComment
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Comentário editado com sucesso.");
+                        fetchComments();
+                    } else {
+                        console.error("Erro ao editar comentário:", response.statusText);
+                    }
+                })
+                .catch(error => console.error("Erro ao editar comentário:", error));
+        }
+    }
+
+    function deleteComment(commentId) {
+        if (confirm("Tem certeza que deseja remover este comentário?")) {
+            fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
+                method: "DELETE"
+            })
+                .then(response => {
+                    if (response.ok) {
+                        console.log("Comentário removido com sucesso.");
+                        fetchComments();
+                    } else {
+                        console.error("Erro ao remover comentário:", response.statusText);
+                    }
+                })
+                .catch(error => console.error("Erro ao remover comentário:", error));
+        }
+    }
+
+    function fetchComments() {
+        listaComentarios.innerHTML = "";
+
+        fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
+            .then(response => response.json())
+            .then(comments => {
+                comments.forEach(comment => {
+                    fetch(
+                        `https://jsonplaceholder.typicode.com/users/${comment.userId}`
+                    )
+                        .then(response => response.json())
+                        .then(user => {
+                            const li = document.createElement("li");
+                            li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
+                                <button class="btnEdit" onclick="editComment(${comment.id})">Editar</button>
+                                <button class="btnDelete" onclick="deleteComment(${comment.id})">Remover</button>`;
+                            listaComentarios.appendChild(li);
+                        })
+                        .catch(error =>
+                            console.error("Erro ao carregar autor do comentário:", error)
+                        );
+                });
+            })
+            .catch(error =>
+                console.error("Erro ao carregar comentários:", error)
+            );
+    }
 </script>
 </body>
 </html>
