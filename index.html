@@ -40,7 +40,7 @@
       <!-- Destaques -->
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
         <!-- Primeira coluna (3/4 da largura) -->
-        <div class="col-span-3 ">
+        <div class="col-span-3">
           <!-- Conteúdo da primeira coluna aqui -->
           <div id="destaques" class="sm:pr-4 mt-4">
             <div class="title">
@@ -60,7 +60,7 @@
             <div class="titulo">
               <h1 class="text-2xl font-bold title">Notícias</h1>
               <div id="noticias"></div>
-            </div> 
+            </div>
           </div>
         </div>
       </div>
@@ -70,156 +70,7 @@
       ></div>
     </div>
 
-    <script src="script.js"></script>
-    <script>
-      let paginaAtual = 1;
-      const postsPorPagina = 5;
-      let totalPosts;
-      const novaNoticia = document.getElementById("noticias");
-      const paginationContainer = document.getElementById("pagination");
-
-      function init() {
-        carregaPosts();
-        carregaDestaques();
-        carregaArtigos();
-      }
-
-      function carregaPosts() {
-        fetch(
-          `https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${postsPorPagina}`
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao carregar os posts");
-            }
-            totalPosts = response.headers.get("X-Total-Count");
-            return response.json();
-          })
-          .then((data) => {
-            renderPosts(data);
-            renderPagination();
-          })
-          .catch((error) => {
-            console.error("Erro:", error);
-          });
-      }
-
-      function renderPosts(posts) {
-        novaNoticia.innerHTML = ""; 
-        posts.forEach((post) => {
-          const div = document.createElement("div");
-          div.innerHTML = `
-          <hr class="w-48 h-1 mx-auto my-5 border-0 rounded hrNoticia"/>
-          <a href="noticias.html?postId=${post.id}" class="text-sm"><h1 class="text-2xl font-bold box">${post.title}</h1></a>
-        `;
-          novaNoticia.appendChild(div);
-        });
-      }
-
-      function renderPagination() {
-        const totalPages = Math.ceil(totalPosts / postsPorPagina);
-        paginationContainer.innerHTML = ""; 
-
-        for (let i = 1; i <= totalPages; i++) {
-          const button = document.createElement("button");
-          button.textContent = i;
-          button.className =
-            "bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-l";
-          if (i === paginaAtual) {
-            button.className +=
-              " bg-gray-400 text-white font-bold py-2 px-4 rounded-l";
-          }
-          button.addEventListener("click", () => {
-            paginaAtual = i;
-            carregaPosts();
-          });
-          paginationContainer.appendChild(button);
-        }
-      }
-
-      function carregaDestaques() {
-  const novoDestaque = document.getElementById("destaques");
-  const apiKey = "2noocBLOIJ6VORZL3DNCrx07Y0h4JFxZ1hXkUrz7CYVlCkcG2Dpx5ShR";
-  fetch(`https://api.pexels.com/v1/curated?per_page=4&page=1`, {
-    headers: {
-      Authorization: apiKey,
-    },
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Erro ao carregar os destaques");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      fetch(`https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${4}`)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Erro ao carregar os destaques");
-          }
-          return response.json();
-        })
-        .then((posts) => {
-          posts.forEach((post, index) => {
-            const div = document.createElement("div");
-            div.innerHTML = `
-              <a href="noticias.html?postId=${post.id} ">
-                <hr class="w-full h-1 mx-auto my-4 border-0 rounded hrNoticia"/>
-                <div class="box">
-                  <img src="${data.photos[index].src.medium}" alt="Imagem" class="w-full h-auto mx-auto my-4 sm:w-48 sm:h-48" />
-                  <h1 class="text-2xl font-bold">${post.title}</h1>
-                  <p class="text-sm">
-                    ${post.body}
-                  </p>
-                </div>
-              </a>
-            `;
-            novoDestaque.appendChild(div);
-          });
-        })
-        .catch((error) => {
-          console.error("Erro ao carregar destaques:", error);
-        });
-    })
-    .catch((error) => {
-      console.error("Erro ao carregar destaques:", error);
-    });
-}
-
-      function carregaArtigos() {
-        const novoArtigo = document.getElementById("artigo");
-        fetch(
-          `https://jsonplaceholder.typicode.com/posts?_page=${paginaAtual}&_limit=${3}`
-        )
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Erro ao carregar os artigos de opinião");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            data.forEach((post) => {
-              const div = document.createElement("div");
-              div.innerHTML = `
-              <a href="noticias.html?postId=${post.id}">
-                <hr class="w-48 h-1 mx-auto my-4 border-0 rounded hrNoticia" />
-                <div class="box">
-                <h1 class="text-2xl font-bold">${post.title}</h1>
-                <p class="text-sm">
-                  ${post.body}
-                </p>
-                </div>
-                
-              </a>
-            `;
-              novoArtigo.appendChild(div);
-            });
-          })
-          .catch((error) => {
-            console.error("Erro ao carregar artigos de opinião:", error);
-          });
-      }
-      init();
-    </script>
+    <script src="script.js" type="module"></script>
+    <script src="servico.js" type="module"></script>
   </body>
 </html>

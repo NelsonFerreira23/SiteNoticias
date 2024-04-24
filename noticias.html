@@ -1,34 +1,48 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
     <title>Detalhes da Notícia</title>
-</head>
-<body class="bg-gray-100">
-<div class="container mx-auto">
-    <div class="mx-20 mt-20 border-2 rounded bg-white">
-        <h1 class="text-3xl font-bold mb-5 mt-5 ml-5 mr-5 text-center text-2xl" id="tituloNoticia"></h1>
+  </head>
+  <body class="bg-gray-100">
+    <div class="container mx-auto">
+      <div class="mx-20 mt-20 border-2 rounded bg-white">
+        <h1
+          class="text-3xl font-bold mb-5 mt-5 ml-5 mr-5 text-center text-2xl"
+          id="tituloNoticia"
+        ></h1>
         <div id="imagem" class="p-10">
-            <img id="imagemNoticia" class=" h-auto mx-auto my-4 imagemSingle" alt="Imagem da Notícia">
+          <img
+            id="imagemNoticia"
+            class="h-auto mx-auto my-4 imagemSingle"
+            alt="Imagem da Notícia"
+          />
         </div>
         <div id="corpoNoticia" class="p-10"></div>
         <div id="autorNoticia" class="p-10"></div>
         <div id="comentarios" class="p-10">
-            <h2 class="text-xl font-bold mb-3">Comentários:</h2>
-            <ul id="listaComentarios" class="list-disc pl-5"></ul>
+          <h2 class="text-xl font-bold mb-3">Comentários:</h2>
+          <ul id="listaComentarios" class="list-disc pl-5"></ul>
         </div>
         <div class="p-10">
-            <a href="index.html" class="text-gray-700 rounded-full px-4 py-2 border border-gray-700 hover:bg-gray-700 hover:text-white">Voltar para a página inicial</a>
+          <a
+            href="index.html"
+            class="text-gray-700 rounded-full px-4 py-2 border border-gray-700 hover:bg-gray-700 hover:text-white"
+            >Voltar para a página inicial</a
+          >
         </div>
+      </div>
     </div>
-</div>
 
-<script src="script.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
+    <script src="script.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const postId = urlParams.get("postId");
 
@@ -39,129 +53,147 @@
         const imagemNoticia = document.getElementById("imagemNoticia");
 
         fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`)
-            .then((response) => response.json())
-            .then((data) => {
-                tituloNoticia.textContent = data.title;
-                corpoNoticia.textContent = data.body;
+          .then((response) => response.json())
+          .then((data) => {
+            tituloNoticia.textContent = data.title;
+            corpoNoticia.textContent = data.body;
 
-                fetch(`https://jsonplaceholder.typicode.com/users/${data.userId}`)
-                    .then((response) => response.json())
-                    .then((user) => {
-                        autorNoticia.textContent = `Autor: ${user.name}`;
-                    })
-                    .catch((error) => console.error("Erro ao carregar autor da notícia:", error));
+            fetch(`https://jsonplaceholder.typicode.com/users/${data.userId}`)
+              .then((response) => response.json())
+              .then((user) => {
+                autorNoticia.textContent = `Autor: ${user.name}`;
+              })
+              .catch((error) =>
+                console.error("Erro ao carregar autor da notícia:", error)
+              );
 
-                fetch(`https://api.pexels.com/v1/search?query=${data.title}&per_page=1&page=1`, {
-                    headers: {
-                        Authorization: "2noocBLOIJ6VORZL3DNCrx07Y0h4JFxZ1hXkUrz7CYVlCkcG2Dpx5ShR",
-                    },
-                })
-                    .then((response) => response.json())
-                    .then((result) => {
-                        if (result.photos.length > 0) {
-                            const imgUrl = result.photos[0].src.medium;
-                            imagemNoticia.src = imgUrl;
-                        } else {
-                            console.log("Imagem não encontrada para este título.");
-                        }
-                    })
-                    .catch((error) => console.error("Erro ao carregar imagem:", error));
-            })
-            .catch((error) => console.error("Erro ao carregar notícia:", error));
+            fetch(
+              `https://api.pexels.com/v1/search?query=${data.title}&per_page=1&page=1`,
+              {
+                headers: {
+                  Authorization:
+                    "2noocBLOIJ6VORZL3DNCrx07Y0h4JFxZ1hXkUrz7CYVlCkcG2Dpx5ShR",
+                },
+              }
+            )
+              .then((response) => response.json())
+              .then((result) => {
+                if (result.photos.length > 0) {
+                  const imgUrl = result.photos[0].src.medium;
+                  imagemNoticia.src = imgUrl;
+                } else {
+                  console.log("Imagem não encontrada para este título.");
+                }
+              })
+              .catch((error) =>
+                console.error("Erro ao carregar imagem:", error)
+              );
+          })
+          .catch((error) => console.error("Erro ao carregar notícia:", error));
 
         fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
-            .then((response) => response.json())
-            .then((comments) => {
-                comments.forEach((comment) => {
-                    fetch(
-                        `https://jsonplaceholder.typicode.com/users/${comment.userId}`
-                    )
-                        .then((response) => response.json())
-                        .then((user) => {
-                            const li = document.createElement("li");
-                            li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
+          .then((response) => response.json())
+          .then((comments) => {
+            comments.forEach((comment) => {
+              fetch(
+                `https://jsonplaceholder.typicode.com/users/${comment.userId}`
+              )
+                .then((response) => response.json())
+                .then((user) => {
+                  const li = document.createElement("li");
+                  li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
                                 <button class="btnEdit" onclick="editComment(${comment.id})">Editar</button>
                                 <button class="btnDelete" onclick="deleteComment(${comment.id})">Remover</button>`;
-                            listaComentarios.appendChild(li);
-                        })
-                        .catch((error) =>
-                            console.error("Erro ao carregar autor do comentário:", error)
-                        );
-                });
-            })
-            .catch((error) =>
-                console.error("Erro ao carregar comentários:", error)
-            );
-    });
+                  listaComentarios.appendChild(li);
+                })
+                .catch((error) =>
+                  console.error("Erro ao carregar autor do comentário:", error)
+                );
+            });
+          })
+          .catch((error) =>
+            console.error("Erro ao carregar comentários:", error)
+          );
+      });
 
-    function editComment(commentId) {
+      function editComment(commentId) {
         const editedComment = prompt("Editar comentário:");
         if (editedComment !== null) {
-            fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
-                method: "PUT",
-                body: JSON.stringify({
-                    body: editedComment
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8"
-                }
+          fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
+            method: "PUT",
+            body: JSON.stringify({
+              body: editedComment,
+            }),
+            headers: {
+              "Content-type": "application/json; charset=UTF-8",
+            },
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log("Comentário editado com sucesso.");
+                fetchComments();
+              } else {
+                console.error(
+                  "Erro ao editar comentário:",
+                  response.statusText
+                );
+              }
             })
-                .then(response => {
-                    if (response.ok) {
-                        console.log("Comentário editado com sucesso.");
-                        fetchComments();
-                    } else {
-                        console.error("Erro ao editar comentário:", response.statusText);
-                    }
-                })
-                .catch(error => console.error("Erro ao editar comentário:", error));
+            .catch((error) =>
+              console.error("Erro ao editar comentário:", error)
+            );
         }
-    }
+      }
 
-    function deleteComment(commentId) {
+      function deleteComment(commentId) {
         if (confirm("Tem certeza que deseja remover este comentário?")) {
-            fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
-                method: "DELETE"
+          fetch(`https://jsonplaceholder.typicode.com/comments/${commentId}`, {
+            method: "DELETE",
+          })
+            .then((response) => {
+              if (response.ok) {
+                console.log("Comentário removido com sucesso.");
+                fetchComments();
+              } else {
+                console.error(
+                  "Erro ao remover comentário:",
+                  response.statusText
+                );
+              }
             })
-                .then(response => {
-                    if (response.ok) {
-                        console.log("Comentário removido com sucesso.");
-                        fetchComments();
-                    } else {
-                        console.error("Erro ao remover comentário:", response.statusText);
-                    }
-                })
-                .catch(error => console.error("Erro ao remover comentário:", error));
+            .catch((error) =>
+              console.error("Erro ao remover comentário:", error)
+            );
         }
-    }
+      }
 
-    function fetchComments() {
+      function fetchComments() {
         listaComentarios.innerHTML = "";
 
         fetch(`https://jsonplaceholder.typicode.com/comments?postId=${postId}`)
-            .then(response => response.json())
-            .then(comments => {
-                comments.forEach(comment => {
-                    fetch(
-                        `https://jsonplaceholder.typicode.com/users/${comment.userId}`
-                    )
-                        .then(response => response.json())
-                        .then(user => {
-                            const li = document.createElement("li");
-                            li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
+          .then((response) => response.json())
+          .then((comments) => {
+            comments.forEach((comment) => {
+              fetch(
+                `https://jsonplaceholder.typicode.com/users/${comment.userId}`
+              )
+                .then((response) => response.json())
+                .then((user) => {
+                  const li = document.createElement("li");
+                  li.innerHTML = `<strong>${comment.email}:</strong> ${comment.body}
                                 <button class="btnEdit" onclick="editComment(${comment.id})">Editar</button>
                                 <button class="btnDelete" onclick="deleteComment(${comment.id})">Remover</button>`;
-                            listaComentarios.appendChild(li);
-                        })
-                        .catch(error =>
-                            console.error("Erro ao carregar autor do comentário:", error)
-                        );
-                });
-            })
-            .catch(error =>
-                console.error("Erro ao carregar comentários:", error)
-            );
-    }
-</script>
-</body>
+                  listaComentarios.appendChild(li);
+                })
+                .catch((error) =>
+                  console.error("Erro ao carregar autor do comentário:", error)
+                );
+            });
+          })
+          .catch((error) =>
+            console.error("Erro ao carregar comentários:", error)
+          );
+      }
+    </script>
+  </body>
 </html>
